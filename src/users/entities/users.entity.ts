@@ -3,7 +3,10 @@ import { BaseEntity } from "../../config/base.entity";
 import { LEVEL_AUTHORITY } from "../../constants/level-authority";
 import { IUser } from "src/interfaces/users.interface";
 import { OrdersEntity } from "../../orders/entities/orders.entity";
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne } from "typeorm";
+import { ShoppingSessionEntity } from "../../shopping-session/entities/shopping-session.entity";
+import { WalletEntity } from "../../wallet/entities/wallet.entity";
+import { TransactionsEntity } from "../../transactions/entities/transactions.entity";
 
 @Entity({ name: 'users' })
 export class UsersEntity extends BaseEntity implements IUser {
@@ -34,6 +37,15 @@ export class UsersEntity extends BaseEntity implements IUser {
     levelAuthority: LEVEL_AUTHORITY;
 
     @OneToMany(() => OrdersEntity, (order) => order.user)
-    orders: OrdersEntity[]
+    orders: OrdersEntity[];
+
+    @OneToMany(() => ShoppingSessionEntity, (shoppingSession) => shoppingSession.user)
+    shoppingSession: ShoppingSessionEntity[];
+
+    @OneToOne(() => WalletEntity, (wallet) => wallet.user)
+    wallet: WalletEntity;
+
+    @OneToMany(() => TransactionsEntity, (transaction) => transaction.user)
+    transactions: TransactionsEntity[];
 
 }

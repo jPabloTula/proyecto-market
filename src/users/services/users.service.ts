@@ -28,7 +28,7 @@ export class UsersService {
             if (users.length === 0) {
                 throw new ErrorManager({
                     type: 'BAD_REQUEST',
-                    message: 'No se encontrao resultado'
+                    message: 'No se han encontrado resultados'
                 })
             }
             return users

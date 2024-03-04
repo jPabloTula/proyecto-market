@@ -8,6 +8,9 @@ import { CartItemsModule } from './cart-items/cart-items.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { OrderItemsModule } from './order-items/order-items.module';
+import { ShoppingSessionModule } from './shopping-session/shopping-session.module';
+import { WalletModule } from './wallet/wallet.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -21,7 +24,10 @@ import { OrderItemsModule } from './order-items/order-items.module';
     CartItemsModule,
     AuthModule,
     ProductsModule,
-    OrderItemsModule
+    OrderItemsModule,
+    ShoppingSessionModule,
+    WalletModule,
+    TransactionsModule
   ]
 })
 export class AppModule {}

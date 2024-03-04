@@ -1,6 +1,8 @@
-import { BaseEntity } from "src/config/base.entity";
+import { CartItemsEntity } from "../../cart-items/entities/cart-items.entity";
+import { BaseEntity } from "../../config/base.entity";
 import { IProduct } from "src/interfaces/products.interface";
-import { Column, Entity } from "typeorm";
+import { OrderItemsEntity } from "../../order-items/entities/order-items.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity({ name: 'products' })
 export class ProductsEnntity extends BaseEntity implements IProduct {
@@ -22,4 +24,10 @@ export class ProductsEnntity extends BaseEntity implements IProduct {
 
     @Column()
     activated: boolean;
+
+    @OneToMany(() => OrderItemsEntity, (orderItems) => orderItems.product)
+    orderItems: OrderItemsEntity[];
+
+    @OneToMany(() => CartItemsEntity, (cartItems) => cartItems.product)
+    cartItems: CartItemsEntity[];
 }
