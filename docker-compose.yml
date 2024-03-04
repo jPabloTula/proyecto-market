@@ -13,3 +13,17 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
+  shopping_cart:
+    container_name: shopping_cart
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - market_pg
+    environment:
+      PORT: 8080
+      DB_HOST: market_pg
+      DB_PORT: 5432
+      DB_USER: umarket
+      DB_PASSWORD: market1234
+      DB_NAME: marketdb
