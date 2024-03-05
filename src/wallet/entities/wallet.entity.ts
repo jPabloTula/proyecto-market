@@ -6,11 +6,11 @@ import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 @Entity({ name: 'wallet'})
 export class WalletEntity extends BaseEntity implements IWallet{
     
-    @Column()
+    @Column({ default: 5000 })
     balance: number; 
 
-    @Column()
-    moneyType: number;
+    @Column({ default: 'usd' })
+    moneyType: string;
 
     @OneToOne(() => UsersEntity, (user) => user.wallet)
     @JoinColumn({ name: 'userId' })
