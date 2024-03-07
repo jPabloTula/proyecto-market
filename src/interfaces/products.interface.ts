@@ -4,5 +4,5 @@ export interface IProduct {
     stock: number;
     category: string;
     description: string;
-    activated: boolean;
+    activated: number;
 }

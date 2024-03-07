@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { UsersEntity } from '../../users/entities/users.entity';
 import { UsersService } from 'src/users/services/users.service';
 import { PayloadToken } from '../interfaces/auth.interfaces';
+import { ErrorManager } from 'src/utils/error.manager';
 
 @Injectable()
 export class AuthService {
@@ -11,13 +12,30 @@ export class AuthService {
     constructor(
         private readonly userService: UsersService
     ) { }
+
+    public async existUser(username: string) {
+        const user = await this.userService.findBy({
+            key: 'email',
+            value: username
+        });
+
+        if(!user) {
+            throw new ErrorManager({
+                type: 'NOT_FOUND',
+                message: 'El usuario no existe'
+            })
+        }
+
+        return user;
+    }
+
     public async validateUser(username: string, password: string) {
         const userByEmail = await this.userService.findBy({
             key: 'email',
             value: username
         });
 
-        if (userByEmail) {
+        if(userByEmail) {
             const match = await bcrypt.compare(password, userByEmail.password);
             if (match) {
                 return userByEmail;

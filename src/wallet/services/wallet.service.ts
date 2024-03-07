@@ -23,7 +23,10 @@ export class WalletService {
                 wallet: body
             });
         } catch (error) {
-            throw ErrorManager.createSignatureError(error.message);
+            throw new ErrorManager({
+                type: 'CONFLICT',
+                message: 'error al crear la billetera'
+            });
         }
     }
 }

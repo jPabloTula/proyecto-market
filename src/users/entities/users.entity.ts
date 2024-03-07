@@ -39,8 +39,8 @@ export class UsersEntity extends BaseEntity implements IUser {
     @OneToMany(() => OrdersEntity, (order) => order.user)
     orders: OrdersEntity[];
 
-    @OneToMany(() => ShoppingSessionEntity, (shoppingSession) => shoppingSession.user)
-    shoppingSession: ShoppingSessionEntity[];
+    @OneToOne(() => ShoppingSessionEntity, (shoppingSession) => shoppingSession.user)
+    shoppingSession: ShoppingSessionEntity;
 
     @OneToOne(() => WalletEntity, (wallet) => wallet.user)
     wallet: WalletEntity;

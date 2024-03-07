@@ -3,17 +3,22 @@ import { BaseEntity } from "../../config/base.entity";
 import { IProduct } from "src/interfaces/products.interface";
 import { OrderItemsEntity } from "../../order-items/entities/order-items.entity";
 import { Column, Entity, OneToMany } from "typeorm";
+import { IsInt, Min, Validate } from "class-validator";
+import { IsNotNegative } from "../../utils/validator.negative";
 
 @Entity({ name: 'products' })
-export class ProductsEnntity extends BaseEntity implements IProduct {
-    
+export class ProductsEntity extends BaseEntity implements IProduct {
+
     @Column()
     name: string;
 
     @Column()
     price: number;
 
-    @Column()
+    @Column({ type: 'int' })
+    @IsInt()
+    @Min(0)
+    @Validate(IsNotNegative)
     stock: number;
 
     @Column()
@@ -22,8 +27,8 @@ export class ProductsEnntity extends BaseEntity implements IProduct {
     @Column()
     description: string;
 
-    @Column()
-    activated: boolean;
+    @Column({ default: 1})
+    activated: number;
 
     @OneToMany(() => OrderItemsEntity, (orderItems) => orderItems.product)
     orderItems: OrderItemsEntity[];

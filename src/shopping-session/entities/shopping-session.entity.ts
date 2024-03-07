@@ -1,11 +1,15 @@
+import { Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { CartItemsEntity } from "../../cart-items/entities/cart-items.entity";
 import { BaseEntity } from "../../config/base.entity";
 import { UsersEntity } from "../../users/entities/users.entity";
-import { Entity, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity({ name: 'shopping-session' })
 export class ShoppingSessionEntity extends BaseEntity {
     
-    @ManyToOne(() => UsersEntity, (user) => user.shoppingSession)
+    @OneToOne(() => UsersEntity, (user) => user.shoppingSession)
     @JoinColumn({ name: 'userId' })
     user: UsersEntity;
+
+    @OneToMany(() => CartItemsEntity, (cartItems) => cartItems.session)
+    cartItems: CartItemsEntity[];
 }

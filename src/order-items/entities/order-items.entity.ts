@@ -2,14 +2,14 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from "../../config/base.entity";
 import { IOrderItems } from 'src/interfaces/order-items.interface';
 import { OrdersEntity } from '../../orders/entities/orders.entity';
-import { ProductsEnntity } from '../../products/entities/products.entity';
+import { ProductsEntity } from '../../products/entities/products.entity';
 
 @Entity({ name: 'order-items'})
 export class OrderItemsEntity extends BaseEntity implements IOrderItems {
     
-    @ManyToOne(() => ProductsEnntity, (product) => product.orderItems)
+    @ManyToOne(() => ProductsEntity, (product) => product.orderItems)
     @JoinColumn({ name: 'productId'})
-    product: ProductsEnntity;
+    product: ProductsEntity;
 
     @ManyToOne(() => OrdersEntity, (order) => order.orderItems)
     @JoinColumn({ name: 'orderId'})
