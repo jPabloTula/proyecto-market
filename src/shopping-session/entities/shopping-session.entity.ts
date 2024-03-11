@@ -6,10 +6,10 @@ import { UsersEntity } from "../../users/entities/users.entity";
 @Entity({ name: 'shopping-session' })
 export class ShoppingSessionEntity extends BaseEntity {
     
-    @OneToOne(() => UsersEntity, (user) => user.shoppingSession)
-    @JoinColumn({ name: 'userId' })
+    @OneToOne(() => UsersEntity)
+    @JoinColumn()
     user: UsersEntity;
 
     @OneToMany(() => CartItemsEntity, (cartItems) => cartItems.session)
-    cartItems: CartItemsEntity[];
+    cart_items: CartItemsEntity[];
 }

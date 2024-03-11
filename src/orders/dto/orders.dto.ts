@@ -1,19 +1,20 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
 
 export class OrderDTO {
     @IsNotEmpty()
     @IsString()
-    userId: string;
+    @IsUUID()
+    user_id: string;
 
     @IsNotEmpty()
     @IsString()
-    paymentType: string;
+    payment_type: string;
 
     @IsNotEmpty()
     @IsString()
-    orderStatus: string;
+    order_status: string;
 
     @IsNotEmpty()
     @IsNumber()
-    totalPrice: number;
+    total_price: number;
 }

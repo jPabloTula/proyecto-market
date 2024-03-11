@@ -26,6 +26,6 @@ export class AuthController {
         }
         const jwt = await this.authService.generateJWT(userValidate);
 
-        return jwt
+        return jwt;
     }
 }

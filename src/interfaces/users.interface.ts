@@ -1,10 +1,10 @@
 export interface IUser {
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     email: string;
     picture: string;
     password: string;
     address: string;
     activated: boolean;
-    levelAuthority: string;
+    level_authority: string;
 }

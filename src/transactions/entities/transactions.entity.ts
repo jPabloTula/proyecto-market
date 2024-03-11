@@ -9,16 +9,16 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 export class TransactionsEntity extends BaseEntity implements ITransaction {
     
     @Column()
-    orderStatus: string;
+    order_status: string;
 
     @Column()
-    totalPrice: number;
+    total_price: number;
 
     @ManyToOne(() => UsersEntity, (user) => user.transactions)
-    @JoinColumn({ name: 'userId'})
+    @JoinColumn({ name: 'user_id'})
     user: UsersEntity;
 
     @ManyToOne(() => OrdersEntity, (order) => order.transactions)
-    @JoinColumn({ name: 'orderId'})
+    @JoinColumn({ name: 'order_id'})
     order: OrdersEntity;
 }

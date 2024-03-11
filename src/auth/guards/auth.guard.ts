@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { PUBLIC_KEY } from "src/constants/key-decorators";
 import { UsersService } from "src/users/services/users.service";
 import { IUseToken } from "../interfaces/auth.interfaces";
-import { userToken } from "src/utils/use.token";
+import { useToken } from "src/utils/use.token";
 import { Request } from "express";
 
 @Injectable()
@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException('Invalid token')
         }
 
-        const manageToken: IUseToken | string = userToken(token);
+        const manageToken: IUseToken | string = useToken(token);
 
         if (typeof manageToken === 'string') {
             throw new UnauthorizedException(manageToken)
@@ -51,7 +51,7 @@ export class AuthGuard implements CanActivate {
         }
 
         req.idUser = user.id;
-        req.roleUser = user.levelAuthority;
+        req.roleUser = user.level_authority;
 
         return true;
     }

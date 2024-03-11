@@ -5,7 +5,7 @@ export class ShoppingSessionDTO {
     @IsNotEmpty()
     @IsString()
     @IsUUID()
-    userId: string;
+    user_id: string;
 
-    cartItems: CartItemDTO[]
+    cart_items: CartItemDTO[]
 }

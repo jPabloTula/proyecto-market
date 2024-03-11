@@ -80,17 +80,17 @@ export class ProductsService {
     // public async updateStockByProductId(id: number, updateStockDto: UpdateStockDTO): Promise<ProductsEntity> {
     //     try {
 
-            // const product = await this.productRepository
-            // .createQueryBuilder('products')
-            // .where({ id })
-            // .getOne();
+    //         const product = await this.productRepository
+    //         .createQueryBuilder('products')
+    //         .where({ id })
+    //         .getOne();
 
-            // if(!product) {
-            //     throw new NotFoundException(`Product with ID ${id} not found`);
-            // }
+    //         if(!product) {
+    //             throw new NotFoundException(`Product with ID ${id} not found`);
+    //         }
 
-            // product.stock = updateStockDto.stock;
-            // await product.save()
+    //         product.stock = updateStockDto.stock;
+    //         return await this.productRepository.save(product);
     //     } catch (error) {
     //         throw ErrorManager.createSignatureError(error.message);
     //     }

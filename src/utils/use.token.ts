@@ -1,7 +1,7 @@
 import { AuthTokenResult, IUseToken } from "src/auth/interfaces/auth.interfaces";
 import * as jwt from 'jsonwebtoken';
 
-export const userToken = (token: string): IUseToken | string => {
+export const useToken = (token: string): IUseToken | string => {
     try {
         const decode = jwt.decode(token) as AuthTokenResult;
 

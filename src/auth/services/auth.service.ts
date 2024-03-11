@@ -63,7 +63,7 @@ export class AuthService {
         const getUser = await this.userService.findUserById(user.id);
 
         const payload: PayloadToken = {
-            role: getUser.levelAuthority,
+            role: getUser.level_authority,
             sub: getUser.id
         }
 

@@ -7,12 +7,12 @@ import { ProductsEntity } from '../../products/entities/products.entity';
 @Entity({ name: 'order-items'})
 export class OrderItemsEntity extends BaseEntity implements IOrderItems {
     
-    @ManyToOne(() => ProductsEntity, (product) => product.orderItems)
-    @JoinColumn({ name: 'productId'})
+    @ManyToOne(() => ProductsEntity, (product) => product.order_items)
+    @JoinColumn({ name: 'product_id'})
     product: ProductsEntity;
 
-    @ManyToOne(() => OrdersEntity, (order) => order.orderItems)
-    @JoinColumn({ name: 'orderId'})
+    @ManyToOne(() => OrdersEntity, (order) => order.order_items)
+    @JoinColumn({ name: 'order_id'})
     order: OrdersEntity;
     
     @Column()

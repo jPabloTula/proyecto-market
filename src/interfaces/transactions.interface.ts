@@ -1,4 +1,4 @@
 export interface ITransaction {
-    orderStatus: string;
-    totalPrice: number;
+    order_status: string;
+    total_price: number;
 }

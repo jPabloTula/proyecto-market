@@ -8,7 +8,7 @@ export class ProductsController {
 
     constructor(private readonly productService: ProductsService) { }
 
-    @Post('create')
+    @Post()
     @UsePipes(new ValidationPipe({
         exceptionFactory: (errors) => new BadRequestException(errors[0].constraints[Object.keys(errors[0].constraints)[0]])
     }))
@@ -25,13 +25,13 @@ export class ProductsController {
         return this.productService.findProducts(page, limit, filters);
     }
 
-    @Get(':productId')
-    public async findProductById(@Param('productId') productId: string): Promise<ProductsEntity> {
-        return this.productService.findProductById(productId);
+    @Get(':product_id')
+    public async findProductById(@Param('product_id') product_id: string): Promise<ProductsEntity> {
+        return this.productService.findProductById(product_id);
     }
 
-    @Put('edit/:productId')
-    public async updateProduct(@Param('productId') id: string, @Body() body: ProductUpdateDTO) {
+    @Put('/:product_id')
+    public async updateProduct(@Param('product_id') id: string, @Body() body: ProductUpdateDTO) {
         return await this.productService.updateProduct(body, id);
     }
 
@@ -40,8 +40,8 @@ export class ProductsController {
     //     return await this.productService.updateStockByProductId(productId, updateStockDto);
     // }   
 
-    @Delete('delete/:productId')
-    public async deleteProduct(@Param('productId') id: string) {
+    @Delete('/:product_id')
+    public async deleteProduct(@Param('product_id') id: string) {
         return await this.productService.deleteProduct(id);
     }
 

@@ -1,4 +1,4 @@
 export interface IWallet {
     balance: number;
-    moneyType: string;
+    money_type: string;
 }

@@ -31,8 +31,8 @@ export class ProductsEntity extends BaseEntity implements IProduct {
     activated: number;
 
     @OneToMany(() => OrderItemsEntity, (orderItems) => orderItems.product)
-    orderItems: OrderItemsEntity[];
+    order_items: OrderItemsEntity[];
 
     @OneToMany(() => CartItemsEntity, (cartItems) => cartItems.product)
-    cartItems: CartItemsEntity[];
+    cart_items: CartItemsEntity[];
 }

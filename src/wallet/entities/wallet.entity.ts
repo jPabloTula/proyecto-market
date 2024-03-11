@@ -10,9 +10,9 @@ export class WalletEntity extends BaseEntity implements IWallet{
     balance: number; 
 
     @Column({ default: 'usd' })
-    moneyType: string;
+    money_type: string;
 
-    @OneToOne(() => UsersEntity, (user) => user.wallet)
-    @JoinColumn({ name: 'userId' })
+    @OneToOne(() => UsersEntity)
+    @JoinColumn()
     user: UsersEntity;
 }

@@ -1,5 +1,5 @@
 export interface IOrder {
-    paymentType: string;
-    orderStatus: string;
-    totalPrice: number;
+    payment_type: string;
+    order_status: string;
+    total_price: number;
 }

@@ -12,10 +12,10 @@ import { TransactionsEntity } from "../../transactions/entities/transactions.ent
 export class UsersEntity extends BaseEntity implements IUser {
     
     @Column()
-    firstName: string;
+    first_name: string;
 
     @Column()
-    lastName: string;
+    last_name: string;
 
     @Column({ unique: true })
     email: string;
@@ -34,13 +34,13 @@ export class UsersEntity extends BaseEntity implements IUser {
     activated: boolean;
 
     @Column({ type: 'enum', enum: LEVEL_AUTHORITY })
-    levelAuthority: LEVEL_AUTHORITY;
+    level_authority: LEVEL_AUTHORITY;
+
+    @OneToOne(() => ShoppingSessionEntity, (shoppingSession) => shoppingSession.user)
+    shopping_session: ShoppingSessionEntity;
 
     @OneToMany(() => OrdersEntity, (order) => order.user)
     orders: OrdersEntity[];
-
-    @OneToOne(() => ShoppingSessionEntity, (shoppingSession) => shoppingSession.user)
-    shoppingSession: ShoppingSessionEntity;
 
     @OneToOne(() => WalletEntity, (wallet) => wallet.user)
     wallet: WalletEntity;
