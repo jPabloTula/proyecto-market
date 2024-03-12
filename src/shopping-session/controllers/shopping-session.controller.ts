@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ShoppingSessionService } from '../services/shopping-session.service';
 import { ShoppingSessionDTO } from '../dto/shopping-session.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Shopping Session')
 @Controller('shopping-session')
 export class ShoppingSessionController {
 

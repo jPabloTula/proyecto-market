@@ -12,9 +12,10 @@ import { ProductsEntity } from 'src/products/entities/products.entity';
 import { ProductsService } from 'src/products/services/products.service';
 import { WalletService } from 'src/wallet/services/wallet.service';
 import { WalletEntity } from 'src/wallet/entities/wallet.entity';
+import { TransactionsEntity } from 'src/transactions/entities/transactions.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([OrdersEntity, CartItemsEntity, OrderItemsEntity, ProductsEntity, WalletEntity])],
+    imports: [TypeOrmModule.forFeature([OrdersEntity, CartItemsEntity, OrderItemsEntity, ProductsEntity, WalletEntity, TransactionsEntity])],
     providers: [OrdersService, UsersService, ShoppingSessionService, CartItemsService, ProductsService, WalletService],
     controllers: [OrdersController],
     exports: [TypeOrmModule]

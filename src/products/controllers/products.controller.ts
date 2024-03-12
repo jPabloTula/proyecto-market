@@ -2,7 +2,9 @@ import { BadRequestException, Body, Controller, DefaultValuePipe, Get, ParseIntP
 import { ProductsService } from '../services/products.service';
 import { ProductDTO, ProductUpdateDTO } from '../dto/products.dto';
 import { ProductsEntity } from '../entities/products.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
 

@@ -4,7 +4,9 @@ import { UserDTO, UserUpdateDTO } from '../dto/users.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { PublicAccess } from 'src/auth/decorators/public.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UsersController {

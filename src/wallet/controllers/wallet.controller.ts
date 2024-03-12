@@ -2,7 +2,9 @@ import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { WalletService } from '../services/wallet.service';
 import { WalletDTO, WalletUpdateDTO } from '../dto/wallet.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Wallets')
 @Controller('wallet')
 export class WalletController {
 

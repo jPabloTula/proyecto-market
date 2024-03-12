@@ -12,6 +12,7 @@ import { ProductsService } from 'src/products/services/products.service';
 import { ProductsEntity } from 'src/products/entities/products.entity';
 import { WalletService } from 'src/wallet/services/wallet.service';
 import { WalletEntity } from 'src/wallet/entities/wallet.entity';
+import { TransactionsEntity } from 'src/transactions/entities/transactions.entity';
 
 @Injectable()
 export class OrdersService {
@@ -30,8 +31,11 @@ export class OrdersService {
         private readonly walletService: WalletService,
         @InjectRepository(WalletEntity)
         private readonly walletRepository: Repository<WalletEntity>,
+        @InjectRepository(TransactionsEntity)
+        private readonly transactionRepository: Repository<TransactionsEntity>
     ) { }
 
+    // Alta de pedido (order)
     public async createOrder(user_id: string): Promise<void> {
 
         try {
@@ -96,8 +100,41 @@ export class OrdersService {
             });
 
             await this.shoppingSessionService.deleteShoppingSession(shoppingSession.id);
+
+            // Crear transaccion
+            const transactionEntity = { user: user, order_status: 'confirmar orden', total_price: sum, order: orderEntity };
+            await this.transactionRepository.save(transactionEntity);
+
         } catch (error) {
             throw ErrorManager.createSignatureError(error.message);
+        }
+    }
+
+    // filtar pedidos (order)
+    public async findOrders(page: number = 1, limit: number = 10, filters?: any): Promise<{ orders: OrdersEntity[]; total: number }> {
+        try {
+            const skip = (page - 1) * limit;
+
+            let query = this.orderRepository.createQueryBuilder('order');
+
+            if (filters) {
+                if (filters.createdAt) {
+                    const dateString = filters.createdAt;
+                    query = query.where("to_char(order.created_at, 'YYYY-MM-DD') = :dateString", { dateString: dateString });
+                }
+
+                if (filters.order_status) {
+                    query = query.where('order.order_status LIKE :order_status', { order_status: `%${filters.order_status}%` });
+                }
+            }
+
+            const total = await query.getCount();
+
+            const orders = await query.skip(skip).take(limit).getMany();
+
+            return { orders, total };
+        } catch (error) {
+            throw new ErrorManager.createSignatureError(error);
         }
     }
 }
