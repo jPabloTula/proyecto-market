@@ -1,18 +1,19 @@
+import { OrderItemsEntity } from './../../order-items/entities/order-items.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersEntity } from '../entities/orders.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { UsersService } from 'src/users/services/users.service';
 import { ErrorManager } from 'src/utils/error.manager';
 import { ShoppingSessionService } from 'src/shopping-session/services/shopping-session.service';
 import { CartItemsService } from 'src/cart-items/services/cart-items.service';
 import { CartItemsEntity } from 'src/cart-items/entities/cart-items.entity';
-import { OrderItemsEntity } from 'src/order-items/entities/order-items.entity';
 import { ProductsService } from 'src/products/services/products.service';
 import { ProductsEntity } from 'src/products/entities/products.entity';
 import { WalletService } from 'src/wallet/services/wallet.service';
 import { WalletEntity } from 'src/wallet/entities/wallet.entity';
 import { TransactionsEntity } from 'src/transactions/entities/transactions.entity';
+import { ORDER_STATUS } from 'src/constants/order-status';
 
 @Injectable()
 export class OrdersService {
@@ -32,7 +33,7 @@ export class OrdersService {
         @InjectRepository(WalletEntity)
         private readonly walletRepository: Repository<WalletEntity>,
         @InjectRepository(TransactionsEntity)
-        private readonly transactionRepository: Repository<TransactionsEntity>
+        private readonly transactionRepository: Repository<TransactionsEntity>,
     ) { }
 
     // Alta de pedido (order)
@@ -135,6 +136,102 @@ export class OrdersService {
             return { orders, total };
         } catch (error) {
             throw new ErrorManager.createSignatureError(error);
+        }
+    }
+
+    // validar estado de orden por estado pendiente de pago
+    public async findOrderById(id: string, user_id: string): Promise<any> {
+        try {
+            const order: OrdersEntity = await this.orderRepository
+                .createQueryBuilder('order')
+                .where({ id, user: { id: user_id }, order_status: ORDER_STATUS.PENDING_PAYMENT })
+                .leftJoinAndSelect('order.user', 'user')
+                .getOne();
+            if (!order) {
+                throw new ErrorManager({
+                    type: 'BAD_REQUEST',
+                    message: 'No se encontro resultado',
+                })
+            }
+            return { order_id: order.id, user_id: order.user.id };
+        } catch (error) {
+            throw new ErrorManager.createSignatureError(error.message);
+        }
+    }
+
+    // aprobar un pedido cambio de estado pago aprobado a aprobado
+    public async findAndAproveOrderById(id: string, user_id: string): Promise<UpdateResult | undefined> {
+        try {
+            const order: OrdersEntity = await this.orderRepository
+                .createQueryBuilder('order')
+                .where({ id, user: { id: user_id }, order_status: ORDER_STATUS.APPROVED_PAYMENT })
+                .leftJoinAndSelect('order.user', 'user')
+                .getOne();
+            if (!order) {
+                throw new ErrorManager({
+                    type: 'BAD_REQUEST',
+                    message: 'No se encontro resultado',
+                })
+            }
+
+            // Crear transaccion
+            const transactionEntity = { user: order.user, order_status: 'orden confirmada', total_price: order.total_price, order: order };
+            await this.transactionRepository.save(transactionEntity);
+
+            order.order_status = ORDER_STATUS.APPROVED;
+            return await this.orderRepository.update(id, order);
+        } catch (error) {
+            throw new ErrorManager.createSignatureError(error.message);
+        }
+    }
+
+    // cancelar pedido (order)
+    public async cancelOrder(id: string, user_id: string): Promise<UpdateResult | undefined> {
+        try {
+            const order: OrdersEntity = await this.orderRepository
+                .createQueryBuilder('order')
+                .where({ id, user: { id: user_id }, order_status: 'PENDING PAYMENT' })
+                .leftJoinAndSelect('order.user', 'user')
+                .getOne();
+            if (!order) {
+                throw new ErrorManager({
+                    type: 'BAD_REQUEST',
+                    message: 'No se encontro resultado',
+                })
+            }
+
+
+            // Crear transaccion
+            const transactionEntity = { user: order.user, order_status: 'pedido cancelado', total_price: order.total_price, order: order };
+            await this.transactionRepository.save(transactionEntity);
+
+            // Actualizar stock en products
+            const orderItems = await this.orderItemsRepository.find({
+                relations: ['product'],
+                where: { order: { id } }
+            });
+            // const product = new ProductsEntity();
+            orderItems.forEach(item => {
+                item.product.stock = item.product.stock + item.quantity;
+                return this.productService.updateProduct(item.product, item.product.id);
+            })
+
+            // Actualizar wallet
+            const wallet = await this.walletRepository.find({
+                relations: ['user']
+            })
+            if (!wallet) {
+                throw ErrorManager.createSignatureError('la billetera no existe');
+            }
+
+            wallet[0].balance = wallet[0].balance + order.total_price;
+
+            await this.walletService.updateWallet(wallet[0], wallet[0].id);
+
+            order.order_status = ORDER_STATUS.CANCELED_BY_SYSTEM;
+            return await this.orderRepository.update(id, order);
+        } catch (error) {
+            throw new ErrorManager.createSignatureError(error.message);
         }
     }
 }

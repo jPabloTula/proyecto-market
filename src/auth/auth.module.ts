@@ -6,8 +6,10 @@ import { AuthController } from './controllers/auth.controller';
 
 @Global()
 @Module({
-    imports: [UsersModule],
+    imports: [
+        UsersModule
+    ],
     providers: [AuthService, UsersService],
     controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule { }
