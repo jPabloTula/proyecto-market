@@ -1,11 +1,8 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 import { CartItemDTO } from "src/cart-items/dto/cart-items.dto";
 
 export class ShoppingSessionDTO {
-    @IsNotEmpty()
-    @IsString()
-    @IsUUID()
-    user_id: string;
 
+    @ApiProperty()
     cart_items: CartItemDTO[]
 }

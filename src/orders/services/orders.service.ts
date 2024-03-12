@@ -56,7 +56,7 @@ export class OrdersService {
             });
 
             // Crear order
-            let orderEntity = { user: user, payment_type: 'credit_card', order_status: 'approved_payment', total_price: 0, order_items: [], transactions: [] };
+            let orderEntity = { user: user, payment_type: 'credit_card', order_status: ORDER_STATUS.PENDING_PAYMENT, total_price: 0, order_items: [], transactions: [] };
             let sum = 0;
             cartItems.forEach(item => {
                 sum += item.product.price * item.quantity;

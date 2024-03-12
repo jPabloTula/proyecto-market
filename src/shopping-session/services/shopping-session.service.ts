@@ -19,11 +19,11 @@ export class ShoppingSessionService {
         private readonly cartItemsRepository: Repository<CartItemsEntity>
     ) { }
 
-    public async createShoppingSession(body: ShoppingSessionDTO): Promise<void> {
+    public async createShoppingSession(body: ShoppingSessionDTO, id: string): Promise<void> {
         try {
-            const shoppingSession = await this.shoppingSessionRepository.findOneBy({ user: { id: body.user_id } });
+            const shoppingSession = await this.shoppingSessionRepository.findOneBy({ user: { id: id } });
 
-            const user = await this.userService.findUserById(body.user_id);
+            const user = await this.userService.findUserById(id);
             if (!user) {
                 throw ErrorManager.createSignatureError('El usuario no existe');
             }
