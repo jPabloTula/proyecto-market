@@ -1,5 +1,5 @@
 import { Controller, DefaultValuePipe, Get, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { TransactionsService } from '../services/transactions.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -15,6 +15,9 @@ export class TransactionsController {
     ) { }
 
     @Roles('CLIENT')
+    @ApiOperation({ 
+        summary: 'Método para listar data de las transacciones'
+    })
     @ApiHeader({ name: 'Access Token' })
     @Get()
     public async findAll(

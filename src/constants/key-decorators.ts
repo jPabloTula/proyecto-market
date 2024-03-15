@@ -1,6 +1,6 @@
 export const PUBLIC_KEY = 'PUBLIC';
 
-export const ROLES_KEY = 'ROLES';
+export const LEVEL_AUTHORITY_KEY = 'LEVEL_AUTHORITY';
 
 export const ADMIN_KEY = 'ADMIN';
 

@@ -6,6 +6,7 @@ import { ShoppingSessionDTO } from '../dto/shopping-session.dto';
 import { ErrorManager } from 'src/utils/error.manager';
 import { UsersService } from 'src/users/services/users.service';
 import { CartItemsEntity } from 'src/cart-items/entities/cart-items.entity';
+import { ProductsEntity } from 'src/products/entities/products.entity';
 // import { ProductsEntity } from 'src/products/entities/products.entity';
 
 @Injectable()
@@ -16,7 +17,9 @@ export class ShoppingSessionService {
         private readonly shoppingSessionRepository: Repository<ShoppingSessionEntity>,
         private readonly userService: UsersService,
         @InjectRepository(CartItemsEntity)
-        private readonly cartItemsRepository: Repository<CartItemsEntity>
+        private readonly cartItemsRepository: Repository<CartItemsEntity>,
+        @InjectRepository(ProductsEntity)
+        private readonly productsRepository: Repository<ProductsEntity>
     ) { }
 
     public async createShoppingSession(body: ShoppingSessionDTO, id: string): Promise<void> {
@@ -34,6 +37,21 @@ export class ShoppingSessionService {
                 const cart_items = body.cart_items.map(cartItem => {
                     return { product: { id: cartItem.product_id }, quantity: cartItem.quantity, session: shoppingSessionEntity };
                 })
+
+                // Verifica si el stock de productos es suficiente
+                const products = await this.productsRepository.find();
+                
+                if (products.length !== 0) {
+                    cart_items.forEach(cart_item => {
+                        const item = products.find((product) => product.id === cart_item.product.id);        
+                        if (item) {
+                            if (item.stock < cart_item.quantity) {
+                                throw ErrorManager.createSignatureError('No hay suficiente stock del producto ' + cart_item.product.id);
+                            }
+                        }
+                    })
+                }
+                                               
                 await this.cartItemsRepository.save(cart_items);
 
                 return Promise.resolve(null);

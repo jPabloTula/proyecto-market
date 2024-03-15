@@ -21,7 +21,7 @@ export class ProductsService {
         }
     }
 
-    public async findProducts(page: number = 1, limit: number = 10, filters?: any): Promise<{ products: ProductsEntity[]; total: number }> {
+    public async findProducts(page: number = 1, limit: number = 10, filters?: any, quantityInOrders?: string, orderBy1?: string, quantityInCItems?: string, orderBy2?: string): Promise<{ products: ProductsEntity[]; total: number }> {
         try {
             const skip = (page - 1) * limit;
 
@@ -39,7 +39,17 @@ export class ProductsService {
 
             const total = await query.getCount();
 
-            const products = await query.skip(skip).take(limit).getMany();
+            const products = (await query
+                .skip(skip)
+                .take(limit)
+                .leftJoinAndSelect('product.order_items', 'order_items')
+                .leftJoinAndSelect('product.cart_items', 'cart_items')
+                .getMany()).sort((a, b) => {
+                if (a[quantityInOrders] === b[quantityInOrders]) {
+                    return orderBy2 === 'ASC' ? a[quantityInCItems] - b[quantityInCItems] : b[quantityInCItems] - a[quantityInCItems];
+                }
+                return orderBy1 === 'ASC' ? a[quantityInOrders] - b[quantityInOrders] : b[quantityInOrders] - a[quantityInOrders];
+            });
 
             return { products, total };
         } catch (error) {
@@ -52,7 +62,11 @@ export class ProductsService {
             const product = await this.productRepository
                 .createQueryBuilder('products')
                 .where({ id })
+                .leftJoinAndSelect('products.order_items', 'order_items')
+                .leftJoinAndSelect('products.cart_items', 'cart_items')
+                .orderBy('products.created_at', 'ASC')
                 .getOne();
+
             if (!product) {
                 throw new NotFoundException(`Product with ID ${id} not found`);
             }

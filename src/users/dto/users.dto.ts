@@ -7,12 +7,12 @@ export class UserDTO {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    firstName: string;
+    first_name: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    lastName: string;
+    last_name: string;
 
     @ApiProperty()
     @IsNotEmpty()
@@ -42,7 +42,7 @@ export class UserDTO {
     @ApiProperty()
     @IsNotEmpty()
     @IsEnum(LEVEL_AUTHORITY)
-    levelAuthority: LEVEL_AUTHORITY;
+    level_authority: LEVEL_AUTHORITY;
 }
 
 export class UserUpdateDTO {
@@ -50,12 +50,12 @@ export class UserUpdateDTO {
     @ApiProperty()
     @IsOptional()
     @IsString()
-    firstName: string;
+    first_name: string;
 
     @ApiProperty()
     @IsOptional()
     @IsString()
-    lastName: string;
+    last_name: string;
 
     @ApiProperty()
     @IsOptional()
@@ -85,5 +85,5 @@ export class UserUpdateDTO {
     @ApiProperty()
     @IsOptional()
     @IsEnum(LEVEL_AUTHORITY)
-    levelAuthority: LEVEL_AUTHORITY;
+    level_authority: LEVEL_AUTHORITY;
 }

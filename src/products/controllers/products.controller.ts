@@ -1,21 +1,26 @@
-import { BadRequestException, Body, Controller, DefaultValuePipe, Get, ParseIntPipe, Post, Query, UsePipes, ValidationPipe, Param, Put, Delete, UseGuards } from '@nestjs/common';
-import { ProductsService } from '../services/products.service';
-import { ProductDTO, ProductUpdateDTO } from '../dto/products.dto';
-import { ProductsEntity } from '../entities/products.entity';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { ProductDTO, ProductUpdateDTO } from '../dto/products.dto';
+import { ProductsEntity } from '../entities/products.entity';
+import { ProductsService } from '../services/products.service';
 
 @ApiTags('Products')
 @Controller('products')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class ProductsController {
 
     constructor(private readonly productService: ProductsService) { }
 
-    @Roles('CLIENT')
+    @Roles('ADMIN')
     @ApiHeader({
         name: 'access_token',
+    })
+    @ApiOperation({ 
+        summary: 'Método para crear un producto',
+        description: 'Se debe pasar por el body la data de prodcuto'
     })
     @Post()
     @UsePipes(new ValidationPipe({
@@ -25,45 +30,59 @@ export class ProductsController {
         return this.productService.createProduct(product);
     }
 
-    @Roles('CLIENT')
+    @Roles('ADMIN')
     @ApiHeader({
         name: 'access_token',
+    })
+    @ApiOperation({ 
+        summary: 'Método para listar los productos'
     })
     @Get()
     public async findAll(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
         @Query() filters?: any,
+        @Query('quantityInOrders') quantityInOrders?: string,
+        @Query('orderBy1') orderBy1?: 'ASC' | 'DESC',
+        @Query('quantityInCItems') quantityInCItems?: string,
+        @Query('orderBy2') orderBy2?: 'ASC' | 'DESC'
     ): Promise<{ products: ProductsEntity[]; total: number }> {
-        return this.productService.findProducts(page, limit, filters);
+        return this.productService.findProducts(page, limit, filters, quantityInOrders, orderBy1, quantityInCItems, orderBy2);
     }
 
-    @Roles('CLIENT')
+    @Roles('ADMIN')
     @ApiHeader({
         name: 'access_token',
+    })
+    @ApiOperation({ 
+        summary: 'Método para listar data de un producto',
+        description: 'Se debe pasar por el body el product_id'
     })
     @Get(':product_id')
     public async findProductById(@Param('product_id') product_id: string): Promise<ProductsEntity> {
         return this.productService.findProductById(product_id);
     }
 
-    @Roles('CLIENT')
+    @Roles('ADMIN')
     @ApiHeader({
         name: 'access_token',
+    })
+    @ApiOperation({ 
+        summary: 'Método para actualizar la data de un producto',
+        description: 'Se debe pasar por el body el product_id'
     })
     @Put('/:product_id')
     public async updateProduct(@Param('product_id') id: string, @Body() body: ProductUpdateDTO) {
         return await this.productService.updateProduct(body, id);
     }
 
-    // @Put('edit/stock/:productId')
-    // public async updateStockByProductId(@Param('productId') productId: number, @Body() updateStockDto: ProductUpdateDTO) {
-    //     return await this.productService.updateStockByProductId(productId, updateStockDto);
-    // }   
-
-    @Roles('CLIENT')
+    @Roles('ADMIN')
     @ApiHeader({
         name: 'access_token',
+    })
+    @ApiOperation({ 
+        summary: 'Método para eliminar un producto',
+        description: 'Se debe pasar por el body el product_id'
     })
     @Delete('/:product_id')
     public async deleteProduct(@Param('product_id') id: string) {
